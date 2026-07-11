@@ -18,8 +18,8 @@ const contactDetails = [
   {
     icon: <FaMapMarkerAlt />,
     label: "Location",
-    value: "Hotel Meghdoot, Royal Enclave",
-    sub: "Udaipur, Rajasthan 313001",
+    value: "Hotel Meghdoot, Indore Road",
+    sub: "Ujjain, Madhya Pradesh 456010",
   },
 ];
 

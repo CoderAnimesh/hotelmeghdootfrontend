@@ -6,13 +6,13 @@ import {
 } from "react-icons/fa";
 
 const footerLinks = [
-  { name: "Home",            href: "#home" },
-  { name: "Rooms & Suites",  href: "#rooms" },
-  { name: "Our Story",       href: "#about" },
-  { name: "Royal Services",  href: "#services" },
-  { name: "Photo Gallery",   href: "#gallery" },
-  { name: "Guest Reviews",   href: "#testimonials" },
-  { name: "Contact",         href: "#contact" },
+  { name: "Home", href: "#home" },
+  { name: "Rooms & Suites", href: "#rooms" },
+  { name: "Our Story", href: "#about" },
+  { name: "Royal Services", href: "#services" },
+  { name: "Photo Gallery", href: "#gallery" },
+  { name: "Guest Reviews", href: "#testimonials" },
+  { name: "Contact", href: "#contact" },
 ];
 
 const amenities = [
@@ -26,10 +26,10 @@ const amenities = [
 ];
 
 const socials = [
-  { icon: <FaFacebookF />,   label: "Facebook",   href: "https://facebook.com" },
-  { icon: <FaInstagram />,   label: "Instagram",  href: "https://instagram.com" },
-  { icon: <FaTwitter />,     label: "Twitter",    href: "https://twitter.com" },
-  { icon: <FaTripadvisor />, label: "TripAdvisor",href: "https://tripadvisor.com" },
+  { icon: <FaFacebookF />, label: "Facebook", href: "https://facebook.com" },
+  { icon: <FaInstagram />, label: "Instagram", href: "https://instagram.com" },
+  { icon: <FaTwitter />, label: "Twitter", href: "https://twitter.com" },
+  { icon: <FaTripadvisor />, label: "TripAdvisor", href: "https://tripadvisor.com" },
 ];
 
 const Footer = () => {
@@ -82,7 +82,7 @@ const Footer = () => {
           </h3>
           <div className="flex items-center justify-center gap-2 text-luxury-cream/50 text-xs font-sans mt-2">
             <FaMapMarkerAlt className="text-luxury-gold" />
-            <span>12, Royal Heritage Road, Udaipur, Rajasthan 313001, India</span>
+            <span>Near Shani Mandir, Indore Road , Ujjain-456010, India</span>
           </div>
         </div>
 
@@ -96,7 +96,7 @@ const Footer = () => {
 
           <iframe
             title="Hotel Meghdoot Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3628.4384156498!2d73.6826392!3d24.5882456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3967e5ee7b0b7cf9%3A0x10cc5e99a35ab459!2sHotel+Meghdoot!5e0!3m2!1sen!2sin!4v1683000000000!5m2!1sen!2sin"
+            src="https://maps.google.com/maps?q=23.1176144,75.7991728&z=17&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0, filter: "invert(92%) hue-rotate(175deg) saturate(0.4) brightness(0.85) contrast(1.1)" }}
@@ -116,13 +116,13 @@ const Footer = () => {
             </div>
             <div>
               <p className="text-[10px] font-semibold text-luxury-gold uppercase tracking-widest font-sans">Hotel Meghdoot</p>
-              <p className="text-[9px] text-luxury-cream/60 font-sans">Udaipur, Rajasthan</p>
+              <p className="text-[9px] text-luxury-cream/60 font-sans">Indore Road, Ujjain</p>
             </div>
           </div>
 
           {/* Open in Maps link */}
           <a
-            href="https://maps.google.com/?q=Hotel+Meghdoot+Udaipur+Rajasthan"
+            href="https://maps.google.com/maps?q=23.1176144,75.7991728&z=17"
             target="_blank"
             rel="noopener noreferrer"
             className="absolute top-4 right-4 z-10 glass-panel rounded-lg px-3 py-1.5 text-[10px] font-sans font-semibold text-luxury-gold uppercase tracking-widest hover:bg-luxury-gold/20 transition-colors"
