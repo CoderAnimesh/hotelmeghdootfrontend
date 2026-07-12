@@ -368,12 +368,13 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
   const handleNeonGoogleLogin = async () => {
     setErrors({});
     try {
+      localStorage.setItem("neon_auth_redirecting", "true");
       const res = await fetch(`${NEON_AUTH_URL}/sign-in/social`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           provider: "google",
-          callbackURL: window.location.origin + "?view=booking"
+          callbackURL: window.location.origin
         })
       });
       const data = await res.json();

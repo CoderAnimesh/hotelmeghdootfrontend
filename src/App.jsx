@@ -30,6 +30,14 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null)
   
   useEffect(() => {
+    // Check if returning from a social auth login redirect
+    const isRedirecting = localStorage.getItem("neon_auth_redirecting");
+    if (isRedirecting === "true") {
+      localStorage.removeItem("neon_auth_redirecting");
+      setView('booking');
+    }
+
+    // Fallback URL query parameter check
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get('view');
     if (viewParam === 'booking') {
