@@ -373,7 +373,7 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           provider: "google",
-          callbackURL: window.location.origin
+          callbackURL: window.location.origin + "?view=booking"
         })
       });
       const data = await res.json();

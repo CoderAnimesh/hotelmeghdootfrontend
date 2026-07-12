@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
 import Loader from './components/Loader.jsx'
@@ -28,6 +28,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [view, setView] = useState('home') // 'home' | 'booking' | 'tableBooking' | 'marriageHall'
   const [selectedRoom, setSelectedRoom] = useState(null)
+  
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view');
+    if (viewParam === 'booking') {
+      setView('booking');
+      // Clean up parameter from URL bar
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
 
   const handleLoaderComplete = useCallback(() => {
     setIsLoading(false)
