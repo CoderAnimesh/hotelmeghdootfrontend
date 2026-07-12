@@ -30,21 +30,20 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null)
   
   useEffect(() => {
-    // Check if returning from a social auth login redirect
-    const isRedirecting = localStorage.getItem("neon_auth_redirecting");
-    if (isRedirecting === "true") {
-      localStorage.removeItem("neon_auth_redirecting");
-      setView('booking');
-    }
-
-    // Fallback URL query parameter check
     const params = new URLSearchParams(window.location.search);
+    const hasVerifier = params.has('neon_auth_session_verifier');
+    const isRedirecting = localStorage.getItem("neon_auth_redirecting");
     const viewParam = params.get('view');
-    if (viewParam === 'booking') {
+
+    if (hasVerifier || isRedirecting === "true" || viewParam === 'booking') {
       setView('booking');
-      // Clean up parameter from URL bar
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
+      
+      // Clean up localStorage and URL parameter only if we do not need to preserve the verifier for the session exchange
+      if (!hasVerifier) {
+        localStorage.removeItem("neon_auth_redirecting");
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
     }
   }, []);
 

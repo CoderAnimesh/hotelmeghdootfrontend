@@ -186,6 +186,13 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
               setCurrentUser(activeUser);
               setPortalState("dashboard");
               setBookingsHistory([]);
+
+              // Clean up the URL parameters and localStorage flag now that session is verified
+              localStorage.removeItem("neon_auth_redirecting");
+              if (window.location.search.includes("neon_auth_session_verifier")) {
+                const cleanUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+              }
             }
           }
         }
