@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import { GoogleOAuthProvider } from '@react-oauth/google'
 
 import Loader from './components/Loader.jsx'
 import Navbar from './components/Navbar.jsx'
@@ -21,7 +20,7 @@ import TableBooking from './components/TableBooking.jsx'
 import MarriageHall from './components/MarriageHall.jsx'
 import HallEnquirySection from './components/HallEnquirySection.jsx'
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1090730602636-g8ocmt26a3h6q8oitepmk3vcuk0t05oc.apps.googleusercontent.com'
+
 
 const isAdminRoute = window.location.pathname === '/admin'
 
@@ -58,15 +57,11 @@ function App() {
 
   // Admin portal — separate route
   if (isAdminRoute) {
-    return (
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <AdminPortal />
-      </GoogleOAuthProvider>
-    )
+    return <AdminPortal />
   }
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <>
       {/* Splash loader on first visit */}
       <AnimatePresence mode="wait">
         {isLoading && (
@@ -117,7 +112,7 @@ function App() {
           )}
         </>
       )}
-    </GoogleOAuthProvider>
+    </>
   )
 }
 

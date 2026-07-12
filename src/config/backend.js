@@ -6,8 +6,10 @@
  */
 
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+export const NEON_AUTH_URL = import.meta.env.VITE_NEON_AUTH_URL || "https://ep-rough-pine-ahg4r89o.neonauth.c-3.us-east-1.aws.neon.tech/neondb/auth";
 console.log("🔍 [Backend Config] VITE_BACKEND_URL:", import.meta.env.VITE_BACKEND_URL);
 console.log("🔍 [Backend Config] Resolves to BACKEND_URL:", BACKEND_URL);
+console.log("🔍 [Backend Config] NEON_AUTH_URL:", NEON_AUTH_URL);
 
 /**
  * Retrieve or generate a persistent device fingerprint token unique to this browser instance
