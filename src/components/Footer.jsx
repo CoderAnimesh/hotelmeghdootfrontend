@@ -287,6 +287,7 @@ const Footer = () => {
             <span className="text-luxury-gold/60">◆</span>
           </div>
           <div className="flex gap-5">
+            <a href="/admin" className="hover:text-luxury-gold text-luxury-gold/70 transition-colors font-medium">Admin Portal</a>
             <a href="#" className="hover:text-luxury-gold transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-luxury-gold transition-colors">Terms of Service</a>
           </div>

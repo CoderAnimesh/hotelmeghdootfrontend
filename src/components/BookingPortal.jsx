@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { getClientFingerprint, requestBackend } from "../config/backend";
+import { getClientFingerprint, requestBackend, BACKEND_URL } from "../config/backend";
 import { RoomDetailModal } from "./Rooms.jsx";
 import { rooms } from "../config/roomsData";
 import {
@@ -168,7 +168,7 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
   // Load live room inventory and poll every 10 seconds
   useEffect(() => {
     const fetchInventory = () => {
-      fetch(`${import.meta.env.VITE_BACKEND_URL || ""}/api/rooms`)
+      fetch(`${BACKEND_URL}/api/rooms`)
         .then(r => r.json())
         .then(d => {
           if (d.success && d.inventory) {
@@ -518,15 +518,28 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
           description: `Luxury Stay Booking — ${bookingConfig.roomType}`,
           image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=200&auto=format&fit=crop",
           order_id: order.id,
-          handler: function (response) {
-            setRazorpayPaymentDetails({
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-              mode: "live"
-            });
-            setShowRazorpay(true); // Open simulated modal to take checkout OTP
-            setPaymentError("");
+          handler: async function (response) {
+            // Directly call verify on backend without OTP check on payment success
+            try {
+              const paymentBody = {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                bookingConfig,
+                billing,
+                mode: "live"
+              };
+              const verifyRes = await requestBackend("/api/payments/verify", "POST", paymentBody);
+              if (verifyRes.success && verifyRes.voucher) {
+                setCurrentBookingVoucher(verifyRes.voucher);
+                setBookingsHistory(prev => [verifyRes.voucher, ...prev]);
+                setHistoryUnlocked(true);
+                setPortalState("voucher");
+                alert("Stay Reservation Secured Successfully!");
+              }
+            } catch (err) {
+              alert(err.message || "Failed to verify stay payment.");
+            }
           },
           prefill: {
             name: currentUser.name,
@@ -579,8 +592,7 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
       const response = await requestBackend(
         "/api/payments/verify",
         "POST",
-        paymentBody,
-        checkoutOtp
+        paymentBody
       );
 
       if (response.success && response.voucher) {
@@ -984,6 +996,23 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
                 SEND VERIFICATION OTP
               </motion.button>
 
+              <div className="flex items-center my-2 text-[10px] text-luxury-cream/40 uppercase tracking-widest font-sans justify-center gap-3">
+                <span className="h-[1px] w-full bg-luxury-gold/15" />
+                <span>Or</span>
+                <span className="h-[1px] w-full bg-luxury-gold/15" />
+              </div>
+
+              {/* Google Register Component */}
+              <div className="flex justify-center w-full min-h-[40px] relative z-20">
+                <GoogleLogin
+                  onSuccess={handleGoogleLoginSuccess}
+                  onError={handleGoogleLoginError}
+                  theme="filled_dark"
+                  shape="rectangular"
+                  width="100%"
+                />
+              </div>
+
               <div className="text-center mt-4">
                 <span className="text-xs font-light text-luxury-cream/60">Already registered? </span>
                 <button
@@ -1158,15 +1187,7 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
                 />
               </div>
 
-              {/* Custom Simulated Google Bypass Button */}
-              <button
-                type="button"
-                onClick={handleSimulatedGoogleLogin}
-                className="w-full py-2.5 rounded-xl border border-red-500/20 hover:border-red-500/40 bg-red-950/20 hover:bg-red-950/40 text-red-300 font-sans font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 focus:outline-none"
-              >
-                <img src="https://docs.developer.tech.gov.sg/assets/img/google-logo.svg" className="w-3.5 h-3.5" alt="Google Logo" />
-                Simulated Google Log-In
-              </button>
+
 
               <div className="text-center mt-4">
                 <span className="text-xs font-light text-luxury-cream/60">New to Meghdoot? </span>
@@ -1562,29 +1583,14 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
                       Reference ID: {razorpayPaymentDetails.razorpay_payment_id}
                     </div>
                     
-                    {/* Stay Authorization Code (3rd Token) */}
-                    <div className="flex flex-col gap-1.5 my-3 pt-3 border-t border-luxury-gold/10 w-full text-left">
-                      <label className="text-[10px] uppercase tracking-wider text-luxury-gold font-bold flex items-center justify-center gap-1">
-                        <FaKey className="w-2.5 h-2.5 animate-pulse" /> Stay Authorization Passcode (3rd Token)
-                      </label>
-                      <input
-                        type="text"
-                        maxLength="6"
-                        value={checkoutOtp}
-                        onChange={(e) => setCheckoutOtp(e.target.value.replace(/[^0-9]/g, ""))}
-                        placeholder="Enter 6-digit code"
-                        className="bg-luxury-dark border border-luxury-gold/30 focus:border-luxury-gold rounded-lg px-3 py-2 text-luxury-cream text-center font-mono font-bold tracking-widest focus:outline-none placeholder-luxury-cream/20 text-xs w-full"
-                      />
-                      <span className="text-[9px] text-luxury-cream/40 text-center italic">
-                        *Dispatched via Resend email. Look at your node backend console logs or use "123456" for instant bypass.
-                      </span>
+                    <div className="w-full text-center py-4 border-t border-b border-luxury-gold/10 my-4 text-xs text-luxury-cream/60">
+                      Payment is verified. Click below to view your receipt.
                     </div>
-                    
                     <button
                       onClick={handleRazorpaySuccess}
                       className="w-full py-3 bg-gradient-to-r from-luxury-gold to-luxury-gold-dark hover:from-luxury-gold-bright hover:to-luxury-gold text-luxury-charcoal font-sans font-bold text-xs uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg focus:outline-none"
                     >
-                      <FaCheckCircle /> Confirm & Complete Booking
+                      <FaCheckCircle /> View Booking Voucher
                     </button>
                   </div>
                 ) : (
@@ -1698,22 +1704,8 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
                         </div>
                       )}
 
-                      {/* Stay Authorization Code (3rd Token) */}
-                      <div className="flex flex-col gap-1.5 my-3 pt-3 border-t border-luxury-gold/10">
-                        <label className="text-[10px] uppercase tracking-wider text-luxury-gold font-bold flex items-center gap-1">
-                          <FaKey className="w-2.5 h-2.5 animate-pulse" /> Stay Authorization Passcode (3rd Token)
-                        </label>
-                        <input
-                          type="text"
-                          maxLength="6"
-                          value={checkoutOtp}
-                          onChange={(e) => setCheckoutOtp(e.target.value.replace(/[^0-9]/g, ""))}
-                          placeholder="Enter 6-digit code"
-                          className="bg-luxury-dark border border-luxury-gold/30 focus:border-luxury-gold rounded-lg px-3 py-2 text-luxury-cream text-center font-mono font-bold tracking-widest focus:outline-none placeholder-luxury-cream/20 text-xs w-full"
-                        />
-                        <span className="text-[9px] text-luxury-cream/40 text-center italic">
-                          *Dispatched via Resend email. Look at your node backend console logs or use "123456" for instant bypass.
-                        </span>
+                      <div className="w-full text-center py-4 border-t border-luxury-gold/10 my-4 text-[10px] text-luxury-cream/50">
+                        Simulation Mode — Click Sim Success below to instantly generate your guest stay records.
                       </div>
 
                       {/* Simulation checkout buttons */}
@@ -1980,7 +1972,7 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
                   </div>
 
                   <span className="text-[10px] text-luxury-cream/40 italic">
-                    *The verification passcode is dispatched via Resend email. Look at your node backend terminal console logs or use "123456" to instantly unlock.
+                    *The verification passcode is dispatched via Resend email. Look at your node backend terminal console logs 
                   </span>
                 </form>
               </div>
@@ -2144,7 +2136,7 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
 };
 
 const BookingPortalWrapper = (props) => {
-  const clientId = import.meta.env?.VITE_GOOGLE_CLIENT_ID || "1098237498237-mockgoogleclientidmeghdoot.apps.googleusercontent.com";
+  const clientId = import.meta.env?.VITE_GOOGLE_CLIENT_ID || "1090730602636-g8ocmt26a3h6q8oitepmk3vcuk0t05oc.apps.googleusercontent.com";
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <BookingPortal {...props} />

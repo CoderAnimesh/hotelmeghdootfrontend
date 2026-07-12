@@ -6,6 +6,8 @@
  */
 
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+console.log("🔍 [Backend Config] VITE_BACKEND_URL:", import.meta.env.VITE_BACKEND_URL);
+console.log("🔍 [Backend Config] Resolves to BACKEND_URL:", BACKEND_URL);
 
 /**
  * Retrieve or generate a persistent device fingerprint token unique to this browser instance

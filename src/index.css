@@ -562,9 +562,32 @@ body::before {
 
 /* ── Print ───────────────────────────────────────────────── */
 @media print {
-  body { background: white !important; color: black !important; }
-  nav, footer, .no-print { display: none !important; }
-  .print-voucher { break-inside: avoid; page-break-inside: avoid; }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  nav, footer, .no-print, button, .no-print-el {
+    display: none !important;
+  }
+  
+  /* Force all nested text elements to inherit dark text and have white/transparent background to avoid blank prints */
+  *, p, span, h1, h2, h3, h4, h5, h6, td, th, div {
+    background: transparent !important;
+    color: black !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  .glass-panel {
+    background: white !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    box-shadow: none !important;
+  }
+
+  .print-voucher {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
