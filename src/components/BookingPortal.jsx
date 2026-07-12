@@ -2187,13 +2187,4 @@ const BookingPortal = ({ selectedRoom, setView, onBack }) => {
   );
 };
 
-const BookingPortalWrapper = (props) => {
-  const clientId = import.meta.env?.VITE_GOOGLE_CLIENT_ID || "1090730602636-g8ocmt26a3h6q8oitepmk3vcuk0t05oc.apps.googleusercontent.com";
-  return (
-    <GoogleOAuthProvider clientId={clientId}>
-      <BookingPortal {...props} />
-    </GoogleOAuthProvider>
-  );
-};
-
-export default BookingPortalWrapper;
+export default BookingPortal;
